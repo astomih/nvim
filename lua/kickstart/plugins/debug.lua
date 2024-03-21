@@ -17,8 +17,6 @@ return {
 	config = function()
 		local dap = require("dap")
 		local dapui = require("dapui")
-		vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DapBreakpointTextHl" })
-		vim.fn.sign_define("DapStopped", { text = "", texthl = "DapStoppedTextHl" })
 		dap.adapters = {
 			lldb = {
 				type = "server",
@@ -33,7 +31,6 @@ return {
 			cpp = {},
 		}
 
-		--		require("dap.ext.vscode").load_launchjs()
 		-- Basic debugging keymaps, feel free to change to your liking!
 		vim.keymap.set("n", "<F5>", dap.continue, { desc = "Debug: Start/Continue" })
 		vim.keymap.set("n", "<F1>", dap.step_into, { desc = "Debug: Step Into" })
@@ -44,8 +41,12 @@ return {
 			dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
 		end, { desc = "Debug: Set Breakpoint" })
 
+		require("dap.ext.vscode").load_launchjs(nil, { lldb = { "c", "cpp", "" } })
+
 		-- Dap UI setup
 		-- For more information, see |:help nvim-dap-ui|
+		vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DapBreakpointTextHl" })
+		vim.fn.sign_define("DapStopped", { text = "", texthl = "DapStoppedTextHl" })
 		dapui.setup({
 			-- Set icons to characters that are more likely to work in every terminal.
 			--    Feel free to remove or use ones that you like more! :)
@@ -138,6 +139,5 @@ return {
 		dap.listeners.after.event_initialized["dapui_config"] = dapui.open
 		dap.listeners.before.event_terminated["dapui_config"] = dapui.close
 		dap.listeners.before.event_exited["dapui_config"] = dapui.close
-		require("dap.ext.vscode").load_launchjs(nil, { lldb = { "c", "cpp", "" } })
 	end,
 }
